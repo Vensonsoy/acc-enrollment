@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<p class="muted">Welcome, {{ user.full_name }}.</p>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_courses }}</div>
+        <div class="stat-label">Courses Offered</div>
+    </div>
+    <div class="stat-card highlight">
+        <div class="stat-number">{{ stats.pending_enrollments }}</div>
+        <div class="stat-label">Pending Enrollments</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.approved_enrollments }}</div>
+        <div class="stat-label">Approved Enrollments</div>
+    </div>
+</div>
+
+<div class="quick-links">
+    <a class="btn btn-primary" href="{{ url_for('admin_manage_courses') }}">Manage Courses</a>
+    <a class="btn btn-primary" href="{{ url_for('admin_manage_enrollments') }}">Review Enrollments</a>
+    <a class="btn btn-secondary" href="{{ url_for('admin_view_students') }}">View Students</a>
+</div>
+{% endblock %}

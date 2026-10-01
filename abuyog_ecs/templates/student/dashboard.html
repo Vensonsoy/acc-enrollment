@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}My Enrollments{% endblock %}
+{% block content %}
+<h2>My Enrollments</h2>
+<p class="muted">Welcome, {{ user.full_name }}.</p>
+
+<table class="data-table">
+    <thead>
+        <tr><th>Course</th><th>Units</th><th>Status</th><th>Requested</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+        {% for e in enrollments %}
+        <tr>
+            <td>{{ e.course_code }} - {{ e.course_name }}</td>
+            <td>{{ e.units }}</td>
+            <td>
+                <span class="badge
+                    {% if e.status == 'approved' %}badge-success
+                    {% elif e.status == 'rejected' %}badge-danger
+                    {% elif e.status == 'dropped' %}badge-muted
+                    {% else %}badge-warning{% endif %}">
+                    {{ e.status }}
+                </span>
+            </td>
+            <td>{{ e.enrolled_at }}</td>
+            <td>
+                {% if e.status in ['pending', 'approved'] %}
+                <form method="POST" action="{{ url_for('student_drop', enrollment_id=e.id) }}" class="inline-form"
+                      onsubmit="return confirm('Drop this course?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-small btn-danger">Drop</button>
+                </form>
+                {% else %}
+                <span class="muted">-</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">You have no enrollments yet. <a href="{{ url_for('student_browse_courses') }}">Browse courses</a>.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

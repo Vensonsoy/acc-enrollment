@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Prevents old IE compatibility-mode quirks; not a security control, just hygiene -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Abuyog Community College{% endblock %} - Enrollment System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">Abuyog Community College <span>Enrollment System</span></div>
+        {% if session.get('user_id') %}
+        <nav>
+            {% if session.role == 'super_admin' %}
+                <a href="{{ url_for('super_admin_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('super_admin_manage_admins') }}">Manage Admins</a>
+            {% elif session.role == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('admin_manage_courses') }}">Courses</a>
+                <a href="{{ url_for('admin_manage_enrollments') }}">Enrollments</a>
+                <a href="{{ url_for('admin_view_students') }}">Students</a>
+            {% elif session.role == 'student' %}
+                <a href="{{ url_for('student_dashboard') }}">My Enrollments</a>
+                <a href="{{ url_for('student_browse_courses') }}">Browse Courses</a>
+            {% endif %}
+            <span class="who">{{ session.username }} ({{ session.role }})</span>
+            <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+        </nav>
+        {% endif %}
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for category, message in messages %}
+                        <!-- {{ message }} is auto-escaped by Jinja2 by default, so even if a
+                             flashed message ever contained user input, it can't inject HTML/JS. -->
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        &copy; Abuyog Community College - Enrollment System
+    </footer>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Super Admin Dashboard{% endblock %}
+{% block content %}
+<h2>Super Admin Dashboard</h2>
+<p class="muted">Welcome, {{ user.full_name }}.</p>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_admins }}</div>
+        <div class="stat-label">Admin Accounts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_students }}</div>
+        <div class="stat-label">Student Accounts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_courses }}</div>
+        <div class="stat-label">Courses Offered</div>
+    </div>
+    <div class="stat-card highlight">
+        <div class="stat-number">{{ stats.pending_enrollments }}</div>
+        <div class="stat-label">Pending Enrollments</div>
+    </div>
+</div>
+
+<p><a class="btn btn-primary" href="{{ url_for('super_admin_manage_admins') }}">Manage Admin Accounts</a></p>
+{% endblock %}

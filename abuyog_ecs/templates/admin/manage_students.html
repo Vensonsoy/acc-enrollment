@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+<h2>Student Roster</h2>
+<table class="data-table">
+    <thead>
+        <tr><th>Full Name</th><th>Username</th><th>Email</th><th>Status</th><th>Registered</th></tr>
+    </thead>
+    <tbody>
+        {% for s in students %}
+        <tr>
+            <td>{{ s.full_name }}</td>
+            <td>{{ s.username }}</td>
+            <td>{{ s.email }}</td>
+            <td>
+                <span class="badge {{ 'badge-success' if s.is_active else 'badge-danger' }}">
+                    {{ 'Active' if s.is_active else 'Disabled' }}
+                </span>
+            </td>
+            <td>{{ s.created_at }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">No students registered yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

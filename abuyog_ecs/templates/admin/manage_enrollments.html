@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Manage Enrollments{% endblock %}
+{% block content %}
+<h2>Enrollment Requests</h2>
+
+<table class="data-table">
+    <thead>
+        <tr><th>Student</th><th>Course</th><th>Requested</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+        {% for e in enrollments %}
+        <tr>
+            <td>{{ e.student_name }} <span class="muted">({{ e.student_username }})</span></td>
+            <td>{{ e.course_code }} - {{ e.course_name }}</td>
+            <td>{{ e.enrolled_at }}</td>
+            <td>
+                <span class="badge
+                    {% if e.status == 'approved' %}badge-success
+                    {% elif e.status == 'rejected' %}badge-danger
+                    {% elif e.status == 'dropped' %}badge-muted
+                    {% else %}badge-warning{% endif %}">
+                    {{ e.status }}
+                </span>
+            </td>
+            <td>
+                {% if e.status == 'pending' %}
+                <form method="POST" action="{{ url_for('admin_decide_enrollment', enrollment_id=e.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" name="decision" value="approved" class="btn btn-small btn-success">Approve</button>
+                    <button type="submit" name="decision" value="rejected" class="btn btn-small btn-danger">Reject</button>
+                </form>
+                {% else %}
+                <span class="muted">-</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">No enrollment requests yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

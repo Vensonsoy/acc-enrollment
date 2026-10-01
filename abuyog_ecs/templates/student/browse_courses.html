@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Browse Courses{% endblock %}
+{% block content %}
+<h2>Available Courses</h2>
+
+<table class="data-table">
+    <thead>
+        <tr><th>Code</th><th>Name</th><th>Units</th><th>Slots Left</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+        {% for c in courses %}
+        <tr>
+            <td>{{ c.course_code }}</td>
+            <td>{{ c.course_name }}<br><span class="muted">{{ c.description }}</span></td>
+            <td>{{ c.units }}</td>
+            <td>{{ c.slots - c.taken_slots }}</td>
+            <td>
+                {% if c.my_status %}
+                    <span class="badge
+                        {% if c.my_status == 'approved' %}badge-success
+                        {% elif c.my_status == 'rejected' %}badge-danger
+                        {% elif c.my_status == 'dropped' %}badge-muted
+                        {% else %}badge-warning{% endif %}">
+                        {{ c.my_status }}
+                    </span>
+                {% elif c.taken_slots >= c.slots %}
+                    <span class="badge badge-muted">Full</span>
+                {% else %}
+                <form method="POST" action="{{ url_for('student_enroll', course_id=c.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-small btn-primary">Enroll</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">No courses are available yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

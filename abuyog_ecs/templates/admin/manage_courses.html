@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Manage Courses{% endblock %}
+{% block content %}
+<h2>Manage Courses</h2>
+
+<div class="card">
+    <h3>Add New Course</h3>
+    <form method="POST" action="{{ url_for('admin_manage_courses') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-row">
+            <div>
+                <label for="course_code">Course Code</label>
+                <input type="text" id="course_code" name="course_code" placeholder="e.g. IT101" required>
+            </div>
+            <div>
+                <label for="course_name">Course Name</label>
+                <input type="text" id="course_name" name="course_name" required>
+            </div>
+        </div>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="2"></textarea>
+        <div class="form-row">
+            <div>
+                <label for="units">Units</label>
+                <input type="number" id="units" name="units" value="3" min="1" required>
+            </div>
+            <div>
+                <label for="slots">Slots</label>
+                <input type="number" id="slots" name="slots" value="40" min="1" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Course</button>
+    </form>
+</div>
+
+<h3>All Courses</h3>
+<table class="data-table">
+    <thead>
+        <tr><th>Code</th><th>Name</th><th>Units</th><th>Enrolled / Slots</th><th>Created</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+        {% for c in courses %}
+        <tr>
+            <td>{{ c.course_code }}</td>
+            <td>{{ c.course_name }}</td>
+            <td>{{ c.units }}</td>
+            <td>{{ c.enrolled_count }} / {{ c.slots }}</td>
+            <td>{{ c.created_at }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_course', course_id=c.id) }}" class="inline-form"
+                      onsubmit="return confirm('Delete this course?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="muted">No courses yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

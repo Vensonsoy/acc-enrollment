@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card auth-card">
+    <h2>Log In</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+        <!-- csrf_token() is registered as a Jinja global in app.py (auth.generate_csrf_token).
+             Every POST form in this project includes this hidden field, and every POST
+             route validates it server-side before doing anything else. -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autofocus>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" class="btn btn-primary">Log In</button>
+    </form>
+    <p class="muted">New student? <a href="{{ url_for('register') }}">Create an account</a></p>
+</div>
+{% endblock %}

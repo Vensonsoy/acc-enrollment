@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Manage Admins{% endblock %}
+{% block content %}
+<h2>Manage Admin Accounts</h2>
+
+<div class="card">
+    <h3>Create New Admin</h3>
+    <form method="POST" action="{{ url_for('super_admin_manage_admins') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-row">
+            <div>
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required>
+            </div>
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required minlength="4" maxlength="20">
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="password">Temporary Password</label>
+                <input type="password" id="password" name="password" required minlength="8">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Admin</button>
+    </form>
+</div>
+
+<h3>Existing Admins</h3>
+<table class="data-table">
+    <thead>
+        <tr><th>Full Name</th><th>Username</th><th>Email</th><th>Status</th><th>Created</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+        {% for admin in admins %}
+        <tr>
+            <td>{{ admin.full_name }}</td>
+            <td>{{ admin.username }}</td>
+            <td>{{ admin.email }}</td>
+            <td>
+                <span class="badge {{ 'badge-success' if admin.is_active else 'badge-danger' }}">
+                    {{ 'Active' if admin.is_active else 'Disabled' }}
+                </span>
+            </td>
+            <td>{{ admin.created_at }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('super_admin_toggle_admin', admin_id=admin.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-small">
+                        {{ 'Disable' if admin.is_active else 'Enable' }}
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="muted">No admin accounts yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
